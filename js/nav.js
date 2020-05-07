@@ -200,14 +200,11 @@ define(["jquery"],function($){
        });
         $(".header-nav .nav-list").on("mouseleave",".nav-item",function(){
             $(this).removeClass("nav-item-active");
-            $("#J_navMenu").removeClass("slide-down").addClass("slide-up");
-            $("#J_navMenu .container ul").hide();
         });
        //当离开整个头部导航时，收起头部导航菜单
-        $(".site-header").on("mouseleave","ul",function(){
+        $(".site-header").mouseleave(function () {
             $("#J_navMenu").removeClass("slide-down").addClass("slide-up");
-            // $(this).show().siblings("ul").hide();
-        });
+        })
 
 
     }
@@ -216,6 +213,7 @@ define(["jquery"],function($){
        $("#search").focus(function(){
            $("#J_keywordList").addClass("show").removeClass("hide");
            $(this).add(".search-btn").css({border:"1px solid orange"});
+           $(this).add(".search-btn").css({boxShadow:"none"});
 
        }).blur(function () {
            $("#J_keywordList").addClass("hide").removeClass("show");
@@ -226,12 +224,27 @@ define(["jquery"],function($){
            $(this).add(".search-btn").css({boxShadow:"none"});
        })
     }
+
+    //为商品列表页添加全部商品导航
+    function allGoodsListTab(){
+       $("#J_navCategory").mouseenter(function(){
+           $(this).addClass("nav-category-active").find(".site-category").show();
+
+
+       }).mouseleave(function () {
+           $(this).removeClass("nav-category-active").find(".site-category").hide();
+
+       })
+    }
    return {
        download:download,
        banner:banner,
        leftNavTab:leftNavTab,
        topNavTab:topNavTab,
        search:search,
+       leftNavDownload:leftNavDownload,
+       topNavDownload:topNavDownload,
+       allGoodsListTab:allGoodsListTab,
    }
 })
 
