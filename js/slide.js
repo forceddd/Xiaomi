@@ -89,8 +89,50 @@ define(["jquery"],function ($) {
             },4000);
         })
     }
+    //14:00与22:00倒计时
+    function countDown(){
+        const now=new Date();
+        const hour=now.getHours();
+        const date=now.getDate();
+        let endTime=new Date();
+        //计算endTime
+        //endTime的日期和小时
+        if(hour<14){
+            endTime.setHours(14);
+            $(".flashsale-countdown .round").html("14:00 场");
+        }else if(hour<22){
+            endTime.setHours(22);
+            $(".flashsale-countdown .round").html("22:00 场");
+        }else{
+            endTime.setDate(date+1);
+            endTime.setHours(14);
+            $(".flashsale-countdown .round").html("明日14:00 场");
+        }
+        //endTime的min sec misec
+        endTime.setSeconds(0);
+        endTime.setMilliseconds(0);
+        endTime.setMinutes(0);
+        let totalSeconds=parseInt((endTime.getTime()-now.getTime())/1000);
+        let aSpans = $(".box-bd .countdown").find("span");
+        let timer = setInterval(function(){
+            totalSeconds--;
+            aSpans.eq(2).html(doubleNum(totalSeconds % 60));
+            aSpans.eq(1).html(doubleNum(Math.floor(totalSeconds / 60) % 60));
+            aSpans.eq(0).html(doubleNum(Math.floor(totalSeconds / 3600) % 24));
+            if(totalSeconds == 0){
+                clearInterval(timer);
+                $(".box-bd .desc").html("本次活动结束,敬请期待~");
+            }
+        }, 1000);
+
+
+    }
+    function doubleNum(num){
+        return num<10?"0"+num:num;
+    }
     return {
         download:download,
         slideTab:slideTab,
+        countDown:countDown
     }
 })

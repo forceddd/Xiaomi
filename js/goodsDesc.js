@@ -9,7 +9,7 @@ define(["jquery","jquery-cookie"],function ($) {
             url:"../data/goodsList.json",
             success:function (result) {
                 const product=result.find(product=>product.product_id==product_id);
-                $(` <!-- 导航 -->
+                let node=$(` <!-- 导航 -->
                 <div id = 'J_proHeader' data-name="${product.name}">
                     <div class = 'xm-product-box'>
                         <div id = 'J_headNav' class = 'nav-bar'>
@@ -133,7 +133,30 @@ define(["jquery","jquery-cookie"],function ($) {
                             </div>
                         </div>
                     </div>
-                </div>`).insertAfter("#app .header");
+                </div>`)
+                node.insertAfter("#app .header");
+                const product_imgs=product.images;
+                //判断图片是否只有一张
+                if(product_imgs.length==1){
+                    $(`<img class = 'slider done' 
+                        src="${product_imgs[0]}" 
+                        style="float: none; list-style: none; position: absolute; width: 560px; z-index: 0; display: block;" 
+                        alt=""/>`).appendTo(node.find("#J_sliderView"));
+                    //隐藏上一张和下一张按钮
+                    node.find(".ui-controls").hide();
+                }else{
+                    for(let i=0;i<product_imgs.length;i++){
+                        //创建下方按钮
+                        $(`<div class = 'ui-pager-item'>
+                                <a href="#" data-slide-index = "0" class = 'ui-pager-link ${i == 0 ? "active" : ""}'>1</a>
+                           </div>`).appendTo(".ui-pager");
+                        //创建图片
+                        $(`<img class = 'slider done' 
+                        src="${product_imgs[i]}" 
+                        style="float: none; list-style: none; position: absolute; width: 560px; z-index: 0; display: ${i==0?"block":"none"};" 
+                        alt=""/>`).appendTo("#J_sliderView");
+                    }
+                }
 
             },
             error:function (msg) {
@@ -141,6 +164,74 @@ define(["jquery","jquery-cookie"],function ($) {
             }
         })
 
+
+
+    }
+    //添加轮播效果
+    function banner() {
+        let currentIndex=0;
+        let imgs=null;
+        let btns=null;
+        let timer=null;
+        timer=setInterval(function () {
+            currentIndex++;
+            tab();
+        },2000);
+
+        function tab() {
+            if(!imgs){
+                imgs=$("#app #J_buyBox #J_sliderView img");
+            }
+            if(!btns){
+                btns=$("#app .ui-controls .ui-pager .ui-pager-item ");
+            }
+            //只有一张图片的是时候 不需要定时器 也不需要切换
+            if(imgs.size()==1){
+                return clearInterval(timer);
+            }
+            if(currentIndex>=btns.size()){
+                currentIndex=0;
+            }
+            if(currentIndex<0){
+                currentIndex=btns.size()-1;
+            }
+            imgs.fadeOut(500);
+            imgs.eq(currentIndex).fadeIn(500);
+            btns.find("a").removeClass("active");
+            btns.eq(currentIndex).find("a").addClass("active");
+        }
+        //为btns绑定点击事件
+        $("#app ").on("click",".ui-controls .ui-pager .ui-pager-item",function () {
+            clearInterval(timer);
+            currentIndex= $(this).index();
+            tab();
+            timer=setInterval(function () {
+                currentIndex++;
+                tab()
+            },2000);
+            return false;
+        })
+        //为左右按钮绑定点击事件
+        $("#app ").on("click",".ui-controls .ui-controls-direction a",function () {
+            clearInterval(timer)
+            $(this).index()==0?currentIndex--:currentIndex++;
+            tab();
+            timer=setInterval(function () {
+                currentIndex++;
+                tab();
+            },2000);
+            return false;
+        });
+        //为图片添加鼠标移入移出事件
+        $("#app").on("mouseenter","#J_img",function () {
+            clearInterval(timer);
+        })
+        $("#app").on("mouseleave","#J_img",function () {
+            timer=setInterval(function () {
+                currentIndex++;
+                tab();
+            },2000);
+        })
 
 
     }
@@ -156,8 +247,33 @@ define(["jquery","jquery-cookie"],function ($) {
         }
         return value;
     }
+    //为购物车按钮添加点击事件
+    $("#app").on("click",".J_login",function(){
+        const id=this.id;
+        // cookie本地缓存(最大4kb 只能存储字符串) 存储商品的id与商品数量
+        //判断cookie products是否已存在
+        let products=JSON.parse($.cookie("products"));
+        if(products){
+            let product=products.find(product=>{
+                if(product.id==id){
+                    product.count++;
+                }
+                return product.id==id;
+            });
+            if(!product){
+                products.push({id:id,count:1});
+            }
+            console.log(products);
+            $.cookie("products",JSON.stringify(products),{expires:7});
 
+        }else{
+            products=[{id:id,count:1}];
+            $.cookie("products",JSON.stringify(products),{expires:7});
+        }
+        return false;
+    })
     return {
         download:download,
+        banner:banner
     }
 })

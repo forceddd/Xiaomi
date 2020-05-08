@@ -28,6 +28,7 @@ require(["nav","slide","data"],function(nav,slide,data){
     //商品数据加载列
     slide.download();
     slide.slideTab();
+    slide.countDown();
     //主页商品数据
     data.download();
     data.menuTab();

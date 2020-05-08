@@ -10,12 +10,12 @@ define(["jquery"],function($){
                //取出轮播图 将其添加到页面上
                const banner = result.banner;
                for(let i=0;i<banner.length;i++){
-                   $(`<a href="${banner[i].url}"><img class="swiper-lazy swiper-lazy-loaded" src="images/banner/${banner[i].img}" alt=""></a>`)
+                   $(`<a href="${banner[i].url}"><img class="swiper-lazy swiper-lazy-loaded" style="${i==0?"block":"none"}" src="images/banner/${banner[i].img}" alt=""></a>`)
                        .appendTo($("#J_homeSwiper .swiper-slide"));
                    $(`<a href="#J_homeSwiper" class = 'swiper-pagination-bullet '></a>`)
                        .appendTo($("#J_homeSwiper .swiper-pagination"));
                }
-               $("#J_homeSwiper .swiper-slide a").find("img").css("display","none").eq(0).show();
+
                //给创建的第一个圆点添加选中样式
                $("#J_homeSwiper .swiper-pagination-bullet").eq(0).addClass("swiper-pagination-bullet-active");
 
@@ -122,7 +122,8 @@ define(["jquery"],function($){
         let currentIndex=0;
         let imgs=null;
         let circles=null;
-        let timer=setInterval(()=>{
+        let timer=null;
+         timer=setInterval(()=>{
             currentIndex++;
             tab();
 
@@ -131,7 +132,7 @@ define(["jquery"],function($){
         //封装切换效果函数
        function tab(){
            if(!imgs){
-               imgs=$("#J_homeSwiper .swiper-slide a>img")
+               imgs=$("#J_homeSwiper .swiper-slide a")
            }
            if(!circles){
                circles=$("#J_homeSwiper .swiper-pagination-bullet");
@@ -142,7 +143,8 @@ define(["jquery"],function($){
            if(currentIndex<0) {
                currentIndex = 4;
            }
-           imgs.hide().eq(currentIndex).fadeIn(500);
+           imgs.find("img").hide();
+           imgs.eq(currentIndex).find("img").fadeIn(500);
            circles.removeClass("swiper-pagination-bullet-active").eq(currentIndex).addClass("swiper-pagination-bullet-active");
        }
 

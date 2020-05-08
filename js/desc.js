@@ -14,12 +14,13 @@ require.config({
 
 require(["nav","goodsDesc"],function (nav,goodsDesc) {
 
-    nav.topNavDownload()
+    nav.topNavDownload();
     nav.topNavTab();
-    nav.search();
     nav.leftNavDownload();
     nav.leftNavTab();
+    nav.search();
     nav.allGoodsListTab();
 
     goodsDesc.download();
+    goodsDesc.banner();
 })
