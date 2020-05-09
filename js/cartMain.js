@@ -13,4 +13,7 @@ require.config({
 require(["goodsShop"],function (goodsShop) {
     goodsShop.download();
     goodsShop.goodsHover();
+    goodsShop.goodsInCar();
+    goodsShop.checkBox();
+    goodsShop.changeGoods();
 })

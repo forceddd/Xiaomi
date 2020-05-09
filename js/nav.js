@@ -202,9 +202,12 @@ define(["jquery"],function($){
        });
         $(".header-nav .nav-list").on("mouseleave",".nav-item",function(){
             $(this).removeClass("nav-item-active");
+            $("#J_navMenu").removeClass("slide-down").addClass("slide-up");
         });
-       //当离开整个头部导航时，收起头部导航菜单
-        $(".site-header").mouseleave(function () {
+       //给顶部导航菜单栏添加鼠标进出事件
+        $("#J_navMenu").mouseenter(function () {
+            $("#J_navMenu").removeClass("slide-up").addClass("slide-down");
+        }).mouseleave(function () {
             $("#J_navMenu").removeClass("slide-down").addClass("slide-up");
         })
 

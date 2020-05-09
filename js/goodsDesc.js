@@ -261,13 +261,13 @@ define(["jquery","jquery-cookie"],function ($) {
                 return product.id==id;
             });
             if(!product){
-                products.push({id:id,count:1});
+                products.push({id:id,count:1,selected:true});
             }
             console.log(products);
             $.cookie("products",JSON.stringify(products),{expires:7});
 
         }else{
-            products=[{id:id,count:1}];
+            products=[{id:id,count:1,selected:true}];
             $.cookie("products",JSON.stringify(products),{expires:7});
         }
         return false;
